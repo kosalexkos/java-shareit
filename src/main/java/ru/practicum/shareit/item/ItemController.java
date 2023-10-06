@@ -17,15 +17,16 @@ import javax.validation.Valid;
 public class ItemController {
     @Autowired
     private final ItemService service;
+    private final static String header = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto add(@Valid @RequestBody ItemDto dto, @RequestHeader("X-Sharer-User-Id") Integer owner) {
+    public ItemDto add(@Valid @RequestBody ItemDto dto, @RequestHeader(header) Integer owner) {
         return service.create(dto, owner);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@Valid @PathVariable("itemId") Integer id, @RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") Integer owner) {
+                          @RequestHeader(header) Integer owner) {
         return service.update(itemDto, owner, id);
     }
 
@@ -35,7 +36,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllByUser(@RequestHeader("X-Sharer-User-Id") Integer owner) {
+    public List<ItemDto> getAllByUser(@RequestHeader(header) Integer owner) {
         return service.getItemsByUser(owner);
     }
 
