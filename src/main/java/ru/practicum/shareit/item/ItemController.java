@@ -17,7 +17,7 @@ import javax.validation.Valid;
 public class ItemController {
     @Autowired
     private final ItemService service;
-    private final static String header = "X-Sharer-User-Id";
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto add(@Valid @RequestBody ItemDto dto, @RequestHeader(header) Integer owner) {
