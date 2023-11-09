@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,17 +34,24 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable("itemId") Integer id) {
-        return service.getItemById(id);
+    public ItemDtoWithBooking getItemById(@RequestHeader(header) Integer owner, @PathVariable("itemId") Integer id) {
+        return service.getItemById(id, owner);
     }
 
     @GetMapping
-    public List<ItemDto> getAllByUser(@RequestHeader(header) Integer owner) {
+    public List<ItemDtoWithBooking> getAllByUser(@RequestHeader(header) Integer owner) {
         return service.getItemsByUser(owner);
     }
 
     @GetMapping("/search")
     public List<ItemDto> getAllByText(@RequestParam(value = "text") String text) {
         return service.getItemsByText(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public Comment addComment(@RequestHeader(header) Integer userId,
+                              @Valid @RequestBody CommentDto commentDto,
+                              @PathVariable("itemId") Integer itemId) {
+        return service.addComment(userId, itemId, commentDto);
     }
 }
