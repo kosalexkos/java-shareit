@@ -36,12 +36,14 @@ public class ItemServiceImpl implements ItemService {
     private CommentRepository commentStorage;
     @Autowired
     private BookingRepository bookingStorage;
+    private final String errorMessage = "User with id = %s not found";
+    private final String errorMessage2 = "Item with id = %s not found";
 
     @Override
     @Transactional
     public ItemDto create(ItemDto i, Integer owner) {
         if (!userStorage.existsById(owner)) {
-            throw new NotFoundException(String.format("There is no user with id = %s." +
+            throw new NotFoundException(String.format(errorMessage +
                     " Item cannot be added to unknown user", owner));
         }
         return ItemDto.toItemDto(itemStorage.save(ItemDto.fromItemDto(i, owner)));
@@ -51,12 +53,11 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto update(ItemDto i, Integer owner, Integer id) {
         if (!itemStorage.existsById(id)) {
-            throw new NotFoundException(String.format("There is no user with id = %s." +
-                    " Item cannot be added to unknown user", owner));
+            throw new NotFoundException(String.format(errorMessage +
+                    " Item cannot be updated by unknown user", owner));
         }
         if (!itemStorage.existsById(id)) {
-            throw new NotFoundException(String.format("There is no item with id = %s." +
-                    " Item cannot be added to unknown user", id));
+            throw new NotFoundException(String.format(errorMessage2, id));
         }
         Item item = itemStorage.getReferenceById(id);
         if (!item.getOwnerId().equals(owner)) {
@@ -78,12 +79,12 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDtoWithBooking getItemById(Integer id, Integer ownerId) {
         if (id == null || !itemStorage.existsById(id)) {
-            throw new NotFoundException(String.format("Item with id %s not found", id));
+            throw new NotFoundException(String.format(errorMessage2, id));
         }
 
         User u = userStorage.findById(ownerId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format("Owner with id %s doesn't exist", ownerId))
+                        () -> new NotFoundException(String.format(errorMessage, ownerId))
                 );
         return ItemDtoWithBooking.toItemDtoWithBooking(itemStorage.getReferenceById(id),
                 bookingStorage.findByItemOwnerId(ownerId), u, commentStorage.findByItemId(id));
@@ -94,7 +95,8 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDtoWithBooking> getItemsByUser(Integer id) {
         User user = userStorage.findById(id)
                 .orElseThrow(
-                        () -> new NotFoundException("Cannot get items with non-existent user")
+                        () -> new NotFoundException(String.format(errorMessage
+                                + " Impossible to get items with non-existent user", id))
                 );
         return itemStorage.findAllByOwnerId(id)
                 .stream()
@@ -122,12 +124,11 @@ public class ItemServiceImpl implements ItemService {
         User user = userStorage.findById(userId)
                 .orElseThrow(
                         () -> new NotFoundException(
-                                String.format("User with id %s not found and is not allowed to leave comments", userId))
+                                String.format(errorMessage, userId))
                 );
         Item item = itemStorage.findById(itemId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format("Item with id %s not found, " +
-                                "comment cannot be left", itemId)));
+                        () -> new NotFoundException(String.format(errorMessage2, itemId)));
 
         List<Booking> bookings = bookingStorage.findByBookerIdAndItemIdAndEndBefore(userId,
                 itemId, LocalDateTime.now());

@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 public class UserController {
     @Autowired
     private final UserService service;
+    private final String path = "/{id}";
 
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto user) {
@@ -26,7 +27,7 @@ public class UserController {
         return service.create(user);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(path)
     public UserDto updateUser(@Valid @PathVariable("id") Integer id, @RequestBody UserDto userDto) {
         log.info("Request to update user");
         return service.update(userDto, id);
@@ -38,13 +39,13 @@ public class UserController {
         return service.getAllUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path)
     public UserDto getUserById(@PathVariable Integer id) {
         log.info("Request to get user with id {}", id);
         return service.getUserById(id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path)
     public ResponseEntity<String> deleteById(@PathVariable Integer id) {
         log.info("Request to delete user with id {}", id);
         service.deleteUserById(id);

@@ -21,19 +21,20 @@ public class ItemController {
     @Autowired
     private final ItemService service;
     private final String header = "X-Sharer-User-Id";
+    private final String path = "/{itemId}";
 
     @PostMapping
     public ItemDto add(@Valid @RequestBody ItemDto dto, @RequestHeader(header) Integer owner) {
         return service.create(dto, owner);
     }
 
-    @PatchMapping("/{itemId}")
+    @PatchMapping(path)
     public ItemDto update(@Valid @PathVariable("itemId") Integer id, @RequestBody ItemDto itemDto,
                           @RequestHeader(header) Integer owner) {
         return service.update(itemDto, owner, id);
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping(path)
     public ItemDtoWithBooking getItemById(@RequestHeader(header) Integer owner, @PathVariable("itemId") Integer id) {
         return service.getItemById(id, owner);
     }
@@ -48,7 +49,7 @@ public class ItemController {
         return service.getItemsByText(text);
     }
 
-    @PostMapping("/{itemId}/comment")
+    @PostMapping(path + "/comment")
     public Comment addComment(@RequestHeader(header) Integer userId,
                               @Valid @RequestBody CommentDto commentDto,
                               @PathVariable("itemId") Integer itemId) {

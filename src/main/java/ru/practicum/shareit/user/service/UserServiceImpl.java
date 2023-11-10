@@ -20,13 +20,14 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userStorage;
+    private final String errorMessage = "Email %s is already in use";
 
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
         if (isDuplicateEmail(userDto.getEmail(), userDto.getId())) {
             userStorage.save(UserDto.fromUserDto(userDto));
-            throw new EmailValidationException(String.format("Email %s is already in use", userDto.getEmail()));
+            throw new EmailValidationException(String.format(errorMessage, userDto.getEmail()));
         }
         User u = userStorage.save(UserDto.fromUserDto(userDto));
         return UserDto.toUserDto(u);
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("Cannot update a non-existent user");
         }
         if (isDuplicateEmail(userDto.getEmail(), id)) {
-            throw new EmailValidationException(String.format("Email %s is already in use", userDto.getEmail()));
+            throw new EmailValidationException(String.format(errorMessage, userDto.getEmail()));
         }
         User user = userStorage.getReferenceById(id);
         if (userDto.getName() != null) {

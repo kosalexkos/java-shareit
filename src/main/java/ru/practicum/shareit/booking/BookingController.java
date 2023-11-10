@@ -19,19 +19,20 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
     private final String header = "X-Sharer-User-Id";
+    private final String path = "/{bookingId}";
 
     @PostMapping
     public BookingDto add(@RequestBody BookingDto bookingDto, @RequestHeader(header) Integer userId) {
         return bookingService.add(bookingDto, userId);
     }
 
-    @PatchMapping("/{bookingId}")
+    @PatchMapping(path)
     public BookingDto update(@PathVariable Integer bookingId, @RequestHeader(header) Integer userId,
                              @RequestParam Boolean approved) {
         return bookingService.update(bookingId, userId, approved);
     }
 
-    @GetMapping("/{bookingId}")
+    @GetMapping(path)
     public BookingDto get(@PathVariable Integer bookingId, @RequestHeader(header) Integer userId) {
         return bookingService.get(bookingId, userId);
     }

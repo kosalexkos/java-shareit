@@ -33,13 +33,15 @@ public class BookingServiceImpl implements BookingService {
     private ItemRepository itemRepository;
     @Autowired
     private UserService userService;
+    private final String errorMessage = "Booking with id = %s not found";
+    private final String errorMessage2 = "Item with id = %s not found";
 
     @Override
     @Transactional
     public BookingDto add(BookingDto bookingDto, Integer userId) {
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(
-                        () -> new NotFoundException(String.format("Item with id = %s not found", bookingDto.getItemId())));
+                        () -> new NotFoundException(String.format(errorMessage2, bookingDto.getItemId())));
 
         if (!item.getAvailable()) {
             throw new BookingException(String.format("%s is not available at the moment", item.getName()));
@@ -59,7 +61,6 @@ public class BookingServiceImpl implements BookingService {
         bookingDto.setBooker(UserDto.toUserDto(booker));
 
         Booking booking = bookingRepository.save(BookingDto.fromBookingDto(bookingDto));
-        System.out.println(booking);
         return BookingDto.toBookingDto(booking);
     }
 
@@ -68,11 +69,11 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto update(Integer bookingId, Integer userId, boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(
-                        () -> new BookingException(String.format("Booking with id = %s does not exist", bookingId))
+                        () -> new BookingException(String.format(errorMessage, bookingId))
                 );
         userService.getUserById(userId);
         Item i = itemRepository.findById(booking.getItem().getId()).orElseThrow(
-                () -> new NotFoundException(String.format("Item with id = %s does not exist", booking.getItem())));
+                () -> new NotFoundException(String.format(errorMessage2, booking.getItem())));
 
         if (!userId.equals(i.getOwnerId())) {
             throw new NotFoundException("No one but the owner can confirm the booking");
@@ -88,10 +89,10 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     public BookingDto get(Integer bookingId, Integer userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException(String.format("Booking with id = %s does not exist", bookingId)));
+                .orElseThrow(() -> new NotFoundException(String.format(errorMessage, bookingId)));
         userService.getUserById(userId);
         Item i = itemRepository.findById(booking.getItem().getId()).orElseThrow(
-                () -> new NotFoundException(String.format("Item with id = %s does not exist", booking.getItem())));
+                () -> new NotFoundException(String.format(errorMessage2, booking.getItem())));
         if (!booking.getBooker().getId().equals(userId) && !i.getOwnerId().equals(userId)) {
             throw new NotFoundException("The requester must be either the owner of the item or the booking");
         }
@@ -114,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
                         LocalDateTime.now(), LocalDateTime.now());
                 break;
             case "PAST":
-                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, end);
+                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, LocalDateTime.now());
                 break;
             case "FUTURE":
                 bookings = bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(bookerId, start);
