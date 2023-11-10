@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
@@ -21,12 +21,26 @@ public class BookingDto {
     Integer id;
     LocalDateTime start;
     LocalDateTime end;
-    Item item;
-    User booker;
+    Integer itemId;
+    ItemDto item;
+    UserDto booker;
     Status status;
 
     public static BookingDto toBookingDto(Booking booking) {
-        return new BookingDto(booking.getId(), booking.getStart(), booking.getEnd(),
-                booking.getItem(), booking.getBooker(), booking.getStatus());
+        return new BookingDto(booking.getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getItem().getId(),
+                ItemDto.toItemDto(booking.getItem()),
+                UserDto.toUserDto(booking.getBooker()),
+                booking.getStatus());
+    }
+
+    public static Booking fromBookingDto(BookingDto dto) {
+        return new Booking(dto.getId(),
+                dto.getStart(),
+                dto.getEnd(),
+                ItemDto.fromItemDto(dto.getItem(), dto.getBooker().getId()),
+                UserDto.fromUserDto(dto.getBooker()), dto.getStatus());
     }
 }

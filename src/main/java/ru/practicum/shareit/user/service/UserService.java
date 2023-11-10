@@ -11,7 +11,7 @@ public interface UserService {
 
     UserDto getUserById(Integer userId);
 
-    boolean deleteUserById(Integer userId);
+    void deleteUserById(Integer userId);
 
     void deleteAllUsers();
 
