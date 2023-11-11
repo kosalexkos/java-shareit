@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.BookingException;
@@ -92,13 +93,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<ItemDtoWithBooking> getItemsByUser(Integer id) {
+    public List<ItemDtoWithBooking> getItemsByUser(Integer id, Integer from, Integer size) {
         User user = userStorage.findById(id)
                 .orElseThrow(
                         () -> new NotFoundException(String.format(errorMessage
-                                + " Impossible to get items with non-existent user", id))
-                );
-        return itemStorage.findAllByOwnerId(id)
+                                + " Impossible to get items with non-existent user", id)));
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return itemStorage.findAllByOwnerId(id, pageRequest)
                 .stream()
                 .map(item -> ItemDtoWithBooking.toItemDtoWithBooking(item,
                         bookingStorage.findByItemId(item.getId()), user,
@@ -108,11 +109,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<ItemDto> getItemsByText(String text) {
+    public List<ItemDto> getItemsByText(String text, Integer from, Integer size) {
         if (text.isEmpty() || text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemStorage.findAllByText(text)
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
+        return itemStorage.findAllByText(text, pageRequest)
                 .stream()
                 .map(ItemDto::toItemDto)
                 .collect(Collectors.toList());

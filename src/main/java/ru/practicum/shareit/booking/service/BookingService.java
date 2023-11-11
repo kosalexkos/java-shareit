@@ -10,9 +10,9 @@ public interface BookingService {
 
     BookingDto update(Integer bookingId, Integer userId, boolean isApproved);
 
-    BookingDto get(Integer bookingId, Integer userId);
+    BookingDto getBooking(Integer bookingId, Integer userId);
 
-    List<BookingDtoResponse> getAllByBooker(String state, Integer userId);
+    List<BookingDtoResponse> getAllByBooker(String state, Integer userId, Integer from, Integer size);
 
-    List<BookingDtoResponse> getAllByOwner(String state, Integer userId);
+    List<BookingDtoResponse> getAllByOwner(String state, Integer userId, Integer from, Integer size);
 }

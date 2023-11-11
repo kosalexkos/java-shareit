@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -87,7 +88,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public BookingDto get(Integer bookingId, Integer userId) {
+    public BookingDto getBooking(Integer bookingId, Integer userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format(errorMessage, bookingId)));
         userService.getUserById(userId);
@@ -101,30 +102,34 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoResponse> getAllByBooker(String state, Integer bookerId) {
+    public List<BookingDtoResponse> getAllByBooker(String state, Integer bookerId, Integer from, Integer size) {
         userService.getUserById(bookerId);
+        if (from < 0) throw new IllegalArgumentException("Wrong data");
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
         List<Booking> bookings;
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now();
         switch (state) {
             case "ALL":
-                bookings = bookingRepository.findByBookerIdOrderByStartDesc(bookerId);
+                bookings = bookingRepository.findByBookerIdOrderByStartDesc(bookerId, pageRequest);
                 break;
             case "CURRENT":
                 bookings = bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfter(bookerId,
-                        LocalDateTime.now(), LocalDateTime.now());
+                        start, end, pageRequest);
                 break;
             case "PAST":
-                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, LocalDateTime.now());
+                bookings = bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, end, pageRequest);
                 break;
             case "FUTURE":
-                bookings = bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(bookerId, start);
+                bookings = bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(bookerId, start, pageRequest);
                 break;
             case "WAITING":
-                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(bookerId, Status.WAITING);
+                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(bookerId, Status.WAITING,
+                        pageRequest);
                 break;
             case "REJECTED":
-                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(bookerId, Status.REJECTED);
+                bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(bookerId, Status.REJECTED,
+                        pageRequest);
                 break;
             default:
                 throw new BookingException("Unknown state: UNSUPPORTED_STATUS");
@@ -139,33 +144,35 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookingDtoResponse> getAllByOwner(String state, Integer ownerId) {
+    public List<BookingDtoResponse> getAllByOwner(String state, Integer ownerId, Integer from, Integer size) {
         userService.getUserById(ownerId);
+        if (from < 0) throw new IllegalArgumentException("Wrong data");
+        PageRequest pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
         List<Booking> bookings;
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = LocalDateTime.now();
         switch (state) {
             case "ALL":
-                bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId);
+                bookings = bookingRepository.findByItemOwnerIdOrderByStartDesc(ownerId, pageRequest);
                 break;
             case "FUTURE":
                 bookings = bookingRepository
-                        .findByItemOwnerIdAndStartIsAfterOrderByStartDesc(ownerId, start);
+                        .findByItemOwnerIdAndStartIsAfterOrderByStartDesc(ownerId, start, pageRequest);
                 break;
             case "CURRENT":
                 bookings = bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfter(ownerId,
-                        LocalDateTime.now(), LocalDateTime.now());
+                        start, end, pageRequest);
                 break;
             case "PAST":
-                bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, end);
+                bookings = bookingRepository.findByItemOwnerIdAndEndBeforeOrderByStartDesc(ownerId, end, pageRequest);
                 break;
             case "WAITING":
                 bookings = bookingRepository
-                        .findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, Status.WAITING);
+                        .findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, Status.WAITING, pageRequest);
                 break;
             case "REJECTED":
                 bookings = bookingRepository
-                        .findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, Status.REJECTED);
+                        .findByItemOwnerIdAndStatusOrderByStartDesc(ownerId, Status.REJECTED, pageRequest);
                 break;
             default:
                 throw new BookingException("Unknown state: UNSUPPORTED_STATUS");

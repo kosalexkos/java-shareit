@@ -23,7 +23,7 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler({BookingException.class})
+    @ExceptionHandler({BookingException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleBookingException(final BookingException e) {
         return Map.of(
