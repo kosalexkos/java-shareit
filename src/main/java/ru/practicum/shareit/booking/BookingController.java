@@ -43,9 +43,9 @@ public class BookingController {
     public List<BookingDtoResponse> getAllByBooker(@RequestParam(required = false, defaultValue = "ALL") String state,
                                                    @RequestHeader(header) Integer booker,
                                                    @RequestParam(name = "from", defaultValue = "0")
-                                                       @PositiveOrZero Integer from,
+                                                   @PositiveOrZero Integer from,
                                                    @RequestParam(name = "size", defaultValue = "10")
-                                                       @Positive Integer size) {
+                                                   @Positive Integer size) {
         return bookingService.getAllByBooker(state, booker, from, size);
     }
 
@@ -53,9 +53,9 @@ public class BookingController {
     public List<BookingDtoResponse> getAllByOwner(@RequestParam(required = false, defaultValue = "ALL") String state,
                                                   @RequestHeader(header) Integer owner,
                                                   @RequestParam(name = "from", defaultValue = "0")
-                                                      @PositiveOrZero Integer from,
+                                                  @PositiveOrZero Integer from,
                                                   @RequestParam(name = "size", defaultValue = "10")
-                                                      @Positive Integer size) {
+                                                  @Positive Integer size) {
         return bookingService.getAllByOwner(state, owner, from, size);
     }
 }

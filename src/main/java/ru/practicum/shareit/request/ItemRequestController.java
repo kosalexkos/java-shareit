@@ -31,7 +31,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto createRequest(@RequestHeader(name = header) Integer userId,
-                                 @RequestBody @Valid ItemRequestDto dto) {
+                                        @RequestBody @Valid ItemRequestDto dto) {
         return requestService.add(dto, userId);
     }
 

@@ -19,7 +19,7 @@ class UserDtoJsonTest {
     @Test
     @SneakyThrows
     void shouldSerialize() {
-        UserDto userDto = new UserDto(1,"dude","dude@dude.com");
+        UserDto userDto = new UserDto(1, "dude", "dude@dude.com");
         JsonContent<UserDto> result = json.write(userDto);
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo("dude");

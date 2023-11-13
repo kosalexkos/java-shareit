@@ -29,7 +29,7 @@ public class RequestServiceIntegrationTest {
     void setUp() {
         UserDto userDto = new UserDto(null, "dude", "dude@dude.com");
         userService.create(userDto);
-        shortItemRequestDto = new ItemRequestDto(null,"tool",null,null);
+        shortItemRequestDto = new ItemRequestDto(null, "tool", null, null);
         itemRequestDto = requestService.add(shortItemRequestDto, 1);
     }
 
@@ -49,7 +49,7 @@ public class RequestServiceIntegrationTest {
     @Test
     void shouldGetAllRequests() {
         userService.create(new UserDto(null, "dude2", "dude2@user.com"));
-        requestService.add(new ItemRequestDto(null,"tool",null,null), 1);
+        requestService.add(new ItemRequestDto(null, "tool", null, null), 1);
         List<ItemRequestDto> itemRequestDtoList = requestService.getAll(2, 0, 10);
         requestService.getAll(2, 1, 10);
 

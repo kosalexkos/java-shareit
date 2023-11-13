@@ -144,7 +144,7 @@ class ItemControllerTest {
     @Test
     @SneakyThrows
     void shouldGetItemsByText() {
-        when(itemService.getItemsByText(anyString(), any(Integer.class),any(Integer.class)))
+        when(itemService.getItemsByText(anyString(), any(Integer.class), any(Integer.class)))
                 .thenReturn(List.of(itemDto, itemDto));
         mvc.perform(get("/items/search?text=SOME")
                         .header("X-Sharer-User-Id", 1))

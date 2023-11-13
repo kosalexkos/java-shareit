@@ -51,9 +51,9 @@ public class RequestServiceUnitTest {
 
         assertEquals(ItemRequestDto.toItemRequestDto(request, List.of()),
                 requestService.add(new ItemRequestDto(null,
-                                request.getDescription(),
-                                null,
-                                null), user2.getId()));
+                        request.getDescription(),
+                        null,
+                        null), user2.getId()));
     }
 
     @Test

@@ -86,7 +86,7 @@ class ItemServiceIntegrationTest {
                 "some tool2",
                 true,
                 null), user.getId());
-        assertEquals(2, itemService.getItemsByUser(user.getId(),0, 2).size());
+        assertEquals(2, itemService.getItemsByUser(user.getId(), 0, 2).size());
     }
 
     @Test

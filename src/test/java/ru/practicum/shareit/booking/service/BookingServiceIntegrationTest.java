@@ -39,10 +39,10 @@ class BookingServiceIntegrationTest {
                 "dude2",
                 "dude2@dude.com"));
         ItemDto item = itemService.create(new ItemDto(null,
-                        "tool",
-                        "nice tool",
-                        true,
-                        null), 1);
+                "tool",
+                "nice tool",
+                true,
+                null), 1);
         bookingDto = new BookingDto(null,
                 LocalDateTime.now().plusDays(1),
                 LocalDateTime.now().plusDays(2),
