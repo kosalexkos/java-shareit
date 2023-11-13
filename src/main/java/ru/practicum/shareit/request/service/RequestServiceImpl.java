@@ -26,15 +26,18 @@ public class RequestServiceImpl implements RequestService {
     private UserRepository userRepository;
     @Autowired
     private ItemRepository itemRepository;
-    private final String errorMessage = "User with an id = %s not found";
-    private final String errorMessage2 = "Request with an id = %s not found";
+    private final String [] errorMessage = new String[]{
+            "User with an id = %s not found",
+            "Request with an id = %s not found",
+            "User with id %s doesn't exist"
+    };
 
     @Override
     @Transactional
     public ItemRequestDto add(ItemRequestDto dto, Integer userId) {
         User u = userRepository.findById(userId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format(errorMessage, userId)));
+                        () -> new NotFoundException(String.format(errorMessage[0], userId)));
         ItemRequest r = ItemRequestDto.fromItemRequestDto(dto, u);
         r.setRequestor(u);
         r.setCreated(LocalDateTime.now());
@@ -48,11 +51,11 @@ public class RequestServiceImpl implements RequestService {
     public ItemRequestDto get(Integer userId, Integer requestId) {
         userRepository.findById(userId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format(errorMessage, userId)));
+                        () -> new NotFoundException(String.format(errorMessage[0], userId)));
 
         ItemRequest r = requestRepository.findById(requestId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format(errorMessage2, requestId))
+                        () -> new NotFoundException(String.format(errorMessage[1], requestId))
                 );
 
         return ItemRequestDto.toItemRequestDto(r, itemRepository.findAllByRequestIdOrderByIdDesc(r.getId()));
@@ -63,7 +66,7 @@ public class RequestServiceImpl implements RequestService {
     public List<ItemRequestDto> getByUserId(Integer userId) {
         userRepository.findById(userId)
                 .orElseThrow(
-                        () -> new NotFoundException(String.format(errorMessage, userId)));
+                        () -> new NotFoundException(String.format(errorMessage[0], userId)));
         List<ItemRequest> requests = requestRepository.findByRequestorIdOrderByCreatedDesc(userId);
         return requests
                 .stream()
@@ -77,8 +80,7 @@ public class RequestServiceImpl implements RequestService {
     public List<ItemRequestDto> getAll(Integer userId, Integer from, Integer size) {
         userRepository.findById(userId)
                 .orElseThrow(
-                        () -> new NotFoundException("Cannot get request with non-existent user")
-                );
+                        () -> new NotFoundException(String.format(errorMessage[2], userId)));
         List<ItemRequest> requests = requestRepository.findByRequestorIdIsNotOrderByCreatedDesc(userId,
                 PageRequest.of(from > 0 ? from / size : 0, size));
         return requests
