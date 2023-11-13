@@ -21,10 +21,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceUnitTest {
+public class UserServiceUnitTest {
     @InjectMocks
     private UserServiceImpl userService;
-
     @Mock
     private UserRepository repository;
 
@@ -72,7 +71,7 @@ class UserServiceUnitTest {
         UserDto userDto = new UserDto(2, "Alex", "dude@dude.com");
         when(repository.existsById(any(Integer.class))).thenReturn(true);
         when(repository.findByEmail(any())).thenReturn(user);
-        assertThrows(EmailValidationException.class, ()-> userService.update(userDto,2));
+        assertThrows(EmailValidationException.class, () -> userService.update(userDto, 2));
     }
 
     @Test
