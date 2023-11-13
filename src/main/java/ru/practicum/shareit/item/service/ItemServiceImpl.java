@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto update(ItemDto i, Integer owner, Integer id) {
-        if (!itemStorage.existsById(id)) {
+        if (!userStorage.existsById(owner)) {
             throw new NotFoundException(String.format(errorMessage +
                     " Item cannot be updated by unknown user", owner));
         }

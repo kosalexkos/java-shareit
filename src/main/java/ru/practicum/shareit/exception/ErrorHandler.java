@@ -11,7 +11,7 @@ import java.util.Map;
 public class ErrorHandler {
     @ExceptionHandler({EmailValidationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleRunTimeException(final EmailValidationException e) {
+    public Map<String, String> handleConflictException(final EmailValidationException e) {
         return Map.of(
                 "error", e.getMessage()
         );
@@ -19,13 +19,13 @@ public class ErrorHandler {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(final NotFoundException e) {
+    public Map<String, String> handleNotFoundException(final NotFoundException e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler({BookingException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleBookingException(final BookingException e) {
+    public Map<String, String> handleBadRequestException(final BookingException e) {
         return Map.of(
                 "error", e.getMessage()
         );

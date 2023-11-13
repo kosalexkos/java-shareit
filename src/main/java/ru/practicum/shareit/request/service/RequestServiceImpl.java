@@ -38,7 +38,8 @@ public class RequestServiceImpl implements RequestService {
         ItemRequest r = ItemRequestDto.fromItemRequestDto(dto, u);
         r.setRequestor(u);
         r.setCreated(LocalDateTime.now());
-        return ItemRequestDto.toItemRequestDto(requestRepository.save(r),
+        r = requestRepository.save(r);
+        return ItemRequestDto.toItemRequestDto(r,
                 itemRepository.findAllByRequestIdOrderByIdDesc(r.getId()));
     }
 
