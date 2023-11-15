@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @RequestMapping("/items")
 @RestController
@@ -40,13 +42,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDtoWithBooking> getAllByUser(@RequestHeader(header) Integer owner) {
-        return service.getItemsByUser(owner);
+    public List<ItemDtoWithBooking> getAllByUser(@RequestHeader(header) Integer owner,
+                                                 @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                                 @RequestParam(defaultValue = "5") @Positive Integer size) {
+        return service.getItemsByUser(owner, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getAllByText(@RequestParam(value = "text") String text) {
-        return service.getItemsByText(text);
+    public List<ItemDto> getAllByText(@RequestParam(value = "text") String text,
+                                      @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                      @RequestParam(defaultValue = "5") @Positive Integer size) {
+        return service.getItemsByText(text, from, size);
     }
 
     @PostMapping(path + "/comment")

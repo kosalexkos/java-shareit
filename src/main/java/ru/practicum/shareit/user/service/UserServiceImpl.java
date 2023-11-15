@@ -20,14 +20,17 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userStorage;
-    private final String errorMessage = "Email %s is already in use";
+    private final String [] errorMessage = new String[]{
+            "Email %s is already in use ",
+            "User with id %s not found "
+    };
 
     @Override
     @Transactional
     public UserDto create(UserDto userDto) {
         if (isDuplicateEmail(userDto.getEmail(), userDto.getId())) {
             userStorage.save(UserDto.fromUserDto(userDto));
-            throw new EmailValidationException(String.format(errorMessage, userDto.getEmail()));
+            throw new EmailValidationException(String.format(errorMessage[0], userDto.getEmail()));
         }
         User u = userStorage.save(UserDto.fromUserDto(userDto));
         return UserDto.toUserDto(u);
@@ -37,10 +40,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto update(UserDto userDto, Integer id) {
         if (id == null || !userStorage.existsById(id)) {
-            throw new NotFoundException("Cannot update a non-existent user");
+            throw new NotFoundException(String.format(errorMessage[1], id));
         }
         if (isDuplicateEmail(userDto.getEmail(), id)) {
-            throw new EmailValidationException(String.format(errorMessage, userDto.getEmail()));
+            throw new EmailValidationException(String.format(errorMessage[0], userDto.getEmail()));
         }
         User user = userStorage.getReferenceById(id);
         if (userDto.getName() != null) {
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Integer userId) {
         return UserDto.toUserDto(userStorage.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %s not found", userId))));
+                .orElseThrow(() -> new NotFoundException(String.format(errorMessage[1], userId))));
     }
 
     @Override

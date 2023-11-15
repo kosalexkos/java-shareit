@@ -22,15 +22,16 @@ public class ItemDto {
     String description;
     @NotNull
     Boolean available;
+    Integer requestId;
 
     public static ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(),
-                item.getAvailable());
+                item.getAvailable(), item.getRequestId());
     }
 
     public static Item fromItemDto(ItemDto dto, Integer owner) {
         return new Item(dto.getId(),
                 dto.getName(), dto.getDescription(),
-                dto.getAvailable(), owner, null);
+                dto.getAvailable(), owner, dto.getRequestId());
     }
 }

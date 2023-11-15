@@ -24,5 +24,5 @@ public class Item {
     @Column(name = "owner_id")
     Integer ownerId;
     @Column(name = "request_id")
-    Integer request;
+    Integer requestId;
 }
