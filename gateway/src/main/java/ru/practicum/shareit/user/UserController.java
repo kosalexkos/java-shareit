@@ -23,12 +23,12 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Object> update(@Valid @PathVariable("userId") Long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<Object> update(@Valid @PathVariable("userId") Integer id, @RequestBody UserDto userDto) {
         return userClient.update(userDto, id);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> get(@PathVariable("userId") Long id) {
+    public ResponseEntity<Object> get(@PathVariable("userId") Integer id) {
         return userClient.get(id);
     }
 
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void delete(@PathVariable("userId") Long id) {
+    public void delete(@PathVariable("userId") Integer id) {
         userClient.delete(id);
     }
 }

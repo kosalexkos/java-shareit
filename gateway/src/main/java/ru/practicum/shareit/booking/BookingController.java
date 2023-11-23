@@ -24,7 +24,7 @@ public class BookingController {
     private final String header = "X-Sharer-User-Id";
 
     @GetMapping
-    public ResponseEntity<Object> getBookingsByUser(@RequestHeader(header) long userId,
+    public ResponseEntity<Object> getBookingsByUser(@RequestHeader(header) Integer userId,
                                                     @RequestParam(name = "state", defaultValue = "all") String stateParam,
                                                     @RequestParam(name = "from", defaultValue = "0")
                                                     @PositiveOrZero Integer from,
@@ -36,7 +36,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<Object> getAllByOwner(@RequestHeader(header) long ownerId,
+    public ResponseEntity<Object> getAllByOwner(@RequestHeader(header) Integer ownerId,
                                                 @RequestParam(name = "state", defaultValue = "all") String stateParam,
                                                 @RequestParam(name = "from", defaultValue = "0")
                                                 @PositiveOrZero Integer from,
@@ -49,22 +49,22 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createBooking(@RequestHeader(header) long userId,
+    public ResponseEntity<Object> createBooking(@RequestHeader(header) Integer userId,
                                                 @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> updateBooking(@PathVariable Long bookingId, @RequestHeader(header) Long userId,
+    public ResponseEntity<Object> updateBooking(@PathVariable Integer bookingId, @RequestHeader(header) Integer userId,
                                                 @RequestParam Boolean approved) {
         log.info("Updating bookingId {}, userId={}", bookingId, userId);
         return bookingClient.update(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getBooking(@RequestHeader(header) long userId,
-                                             @PathVariable Long bookingId) {
+    public ResponseEntity<Object> getBooking(@RequestHeader(header) Integer userId,
+                                             @PathVariable Integer bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }

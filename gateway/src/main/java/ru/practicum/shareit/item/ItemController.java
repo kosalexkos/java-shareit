@@ -17,45 +17,46 @@ import javax.validation.Valid;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemClient itemClient;
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
     public ResponseEntity<Object> add(@Valid @RequestBody ItemDto itemDto,
-                                      @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+                                      @RequestHeader(header) Integer ownerId) {
         log.info("Creating item {}, ownerId={}", itemDto, ownerId);
         return itemClient.add(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<Object> update(@Valid @PathVariable("itemId") Long id,
+    public ResponseEntity<Object> update(@Valid @PathVariable("itemId") Integer id,
                                          @RequestBody ItemDto itemDto,
-                                         @RequestHeader("X-Sharer-User-Id") Long ownerId) {
+                                         @RequestHeader(header) Integer ownerId) {
         log.info("Updating item {}, ownerId={}", itemDto, ownerId);
         return itemClient.update(id, ownerId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> get(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable("itemId") Long id) {
+    public ResponseEntity<Object> get(@RequestHeader(header) Integer userId, @PathVariable("itemId") Integer id) {
         log.info("Get bookingId {}, userId={}", id, userId);
         return itemClient.get(id, userId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getAllByUser(@RequestHeader("X-Sharer-User-Id") Long ownerId) {
+    public ResponseEntity<Object> getAllByUser(@RequestHeader(header) Integer ownerId) {
         log.info("Get all items by ownerId={}", ownerId);
         return itemClient.getAllByUser(ownerId);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> getAllByText(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+    public ResponseEntity<Object> getAllByText(@RequestHeader(header) Integer ownerId,
                                                @RequestParam(value = "text") String text) {
         log.info("Get all items contains text={}", text);
         return itemClient.getAllByText(text, ownerId);
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> addComment(@RequestHeader(header) Integer userId,
                                              @Valid @RequestBody CommentDto commentDto,
-                                             @PathVariable("itemId") Long itemId) {
+                                             @PathVariable("itemId") Integer itemId) {
         log.info("Added a comment {} to the itemId = {}", commentDto, itemId);
         return itemClient.addComment(userId, commentDto, itemId);
     }

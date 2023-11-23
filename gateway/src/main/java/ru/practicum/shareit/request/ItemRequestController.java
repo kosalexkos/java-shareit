@@ -19,26 +19,27 @@ import javax.validation.constraints.PositiveOrZero;
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
     private final ItemRequestClient itemRequestClient;
+    private final String header = "X-Sharer-User-Id";
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> create(@RequestHeader(name = header) Integer userId,
                                          @RequestBody @Valid ItemRequestDto itemRequestDto) {
         return itemRequestClient.add(userId, itemRequestDto);
     }
 
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> getRequestById(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
-                                                 @PathVariable(name = "requestId") Long requestId) {
+    public ResponseEntity<Object> getRequestById(@RequestHeader(name = header) Integer userId,
+                                                 @PathVariable(name = "requestId") Integer requestId) {
         return itemRequestClient.get(userId, requestId);
     }
 
     @GetMapping
-    public ResponseEntity<Object> getByUserId(@RequestHeader(name = "X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<Object> getByUserId(@RequestHeader(name = header) Integer userId) {
         return itemRequestClient.getByUserId(userId);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Object> getAllRequests(@RequestHeader(name = "X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getAllRequests(@RequestHeader(name = header) Integer userId,
                                                  @RequestParam(name = "from", defaultValue = "0")
                                                  @PositiveOrZero Integer from,
                                                  @RequestParam(name = "size", defaultValue = "10")

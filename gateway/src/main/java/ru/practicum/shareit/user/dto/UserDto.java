@@ -12,10 +12,10 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDto {
-    private Long id;
+    Integer id;
     @NotBlank
-    private String name;
+    String name;
     @Email
     @NotBlank
-    private String email;
+    String email;
 }

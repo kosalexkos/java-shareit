@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemDto {
-    private Long id;
-    @NotBlank(message = "Name must be completed")
+    private Integer id;
+    @NotBlank
     private String name;
-    @NotBlank(message = "Description must be completed")
+    @NotBlank
     private String description;
-    @NotNull(message = "Available must be completed")
+    @NotNull
     private Boolean available;
-    private Long requestId;
+    private Integer requestId;
 }
