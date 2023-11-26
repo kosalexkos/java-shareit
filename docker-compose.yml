@@ -23,8 +23,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
       - DB_NAME=shareit
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=pass47W0rD
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
       - DB_HOST=db
       - DB_PORT=5432
   #      - TZ=Europe/Moscow
@@ -36,6 +36,6 @@ services:
       - "6541:5432"
     environment:
       - POSTGRES_DB=shareit
-      - POSTGRES_USERNAME=postgres
-      - POSTGRES_PASSWORD=pass47W0rD
+      - POSTGRES_USERNAME=root
+      - POSTGRES_PASSWORD=root
 #      - TZ=Europe/Moscow
