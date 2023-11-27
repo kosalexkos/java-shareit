@@ -31,7 +31,7 @@ public class BookingController {
                                                     @PositiveOrZero Integer from,
                                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         Optional<BookingState> state = BookingState.from(stateParam);
-        if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: " + stateParam);
+       // if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: UNSUPPORTED_STATUS");
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
         return bookingClient.getBookingsByUser(userId, state.get(), from, size);
     }
@@ -44,7 +44,7 @@ public class BookingController {
                                                 @RequestParam(name = "size", defaultValue = "10")
                                                 @Positive Integer size) {
         Optional<BookingState> state = BookingState.from(stateParam);
-        if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: " + stateParam);
+       // if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: UNSUPPORTED_STATUS");
         log.info("Get booking with state {}, ownerId={}, from={}, size={}", stateParam, ownerId, from, size);
         return bookingClient.getBookingsByOwner(ownerId, state.get(), from, size);
     }
