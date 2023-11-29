@@ -22,6 +22,7 @@ import ru.practicum.shareit.booking.model.Booking;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,6 +108,7 @@ public class ItemServiceImpl implements ItemService {
                 .map(item -> ItemDtoWithBooking.toItemDtoWithBooking(item,
                         bookingStorage.findByItemId(item.getId()), user,
                         commentStorage.findByItemId(item.getId())))
+                .sorted(Comparator.comparingInt(ItemDtoWithBooking::getId))
                 .collect(Collectors.toList());
     }
 

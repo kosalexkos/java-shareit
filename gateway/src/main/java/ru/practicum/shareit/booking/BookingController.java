@@ -25,15 +25,16 @@ public class BookingController {
     private final String header = "X-Sharer-User-Id";
 
     @GetMapping
-    public ResponseEntity<Object> getBookingsByUser(@RequestHeader(header) Integer userId,
-                                                    @RequestParam(name = "state", defaultValue = "all") String stateParam,
-                                                    @RequestParam(name = "from", defaultValue = "0")
-                                                    @PositiveOrZero Integer from,
-                                                    @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        Optional<BookingState> state = BookingState.from(stateParam);
-       // if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: UNSUPPORTED_STATUS");
+    public ResponseEntity<Object> getAllByUser(@RequestHeader(header) Integer userId,
+                                               @RequestParam(name = "state", defaultValue = "all") String stateParam,
+                                               @RequestParam(name = "from", defaultValue = "0")
+                                               @PositiveOrZero Integer from,
+                                               @RequestParam(name = "size", defaultValue = "10")
+                                               @Positive Integer size) {
+        BookingState state = BookingState.from(stateParam)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-        return bookingClient.getBookingsByUser(userId, state.get(), from, size);
+        return bookingClient.getBookingsByUser(userId, state, from, size);
     }
 
     @GetMapping("/owner")
@@ -43,10 +44,10 @@ public class BookingController {
                                                 @PositiveOrZero Integer from,
                                                 @RequestParam(name = "size", defaultValue = "10")
                                                 @Positive Integer size) {
-        Optional<BookingState> state = BookingState.from(stateParam);
-       // if (state.isEmpty()) return ResponseEntity.badRequest().body("Unknown state: UNSUPPORTED_STATUS");
+        BookingState state = BookingState.from(stateParam)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
         log.info("Get booking with state {}, ownerId={}, from={}, size={}", stateParam, ownerId, from, size);
-        return bookingClient.getBookingsByOwner(ownerId, state.get(), from, size);
+        return bookingClient.getBookingsByOwner(ownerId, state, from, size);
     }
 
     @PostMapping
