@@ -31,7 +31,7 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> get(Integer userId, Integer requestId) {
-        return get("/" + requestId, userId);
+        return get(String.format("/%s", requestId), userId);
     }
 
     public ResponseEntity<Object> getByUserId(Integer userId) {

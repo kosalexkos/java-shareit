@@ -31,8 +31,12 @@ public class BookingClient extends BaseClient {
         return post("", userId, requestDto);
     }
 
+    ;
+
     public ResponseEntity<Object> update(Integer bookingId, Integer userId, Boolean approved) {
-        return patch("/" + bookingId + "?approved=" + approved, userId);
+
+        return patch(String.format("/%s?approved=%s", bookingId, approved), userId);
+
     }
 
     public ResponseEntity<Object> getBookingsByUser(Integer userId, BookingState state, Integer from, Integer size) {
@@ -54,6 +58,6 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getBooking(Integer userId, Integer bookingId) {
-        return get("/" + bookingId, userId);
+        return get(String.format("/%s", bookingId), userId);
     }
 }

@@ -30,11 +30,11 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> update(Integer itemId, Integer userId, ItemDto itemDto) {
-        return patch("/" + itemId, userId, itemDto);
+        return patch(String.format("/%s", itemId), userId, itemDto);
     }
 
     public ResponseEntity<Object> get(Integer itemId, Integer userId) {
-        return get("/" + itemId, userId);
+        return get(String.format("/%s", itemId), userId);
     }
 
     public ResponseEntity<Object> getAllByUser(Integer ownerId) {
@@ -42,10 +42,10 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllByText(String text, Integer ownerId) {
-        return get("/search?text=" + text, ownerId);
+        return get(String.format("/search?text=%s", text), ownerId);
     }
 
     public ResponseEntity<Object> addComment(Integer userId, CommentDto commentDto, Integer itemId) {
-        return post("/" + itemId + "/comment", userId, commentDto);
+        return post(String.format("/%s/comment", itemId), userId, commentDto);
     }
 }
